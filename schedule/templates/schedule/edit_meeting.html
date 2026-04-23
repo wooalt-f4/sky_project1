@@ -1,0 +1,21 @@
+{% extends 'schedule/base.html' %}
+
+{% block title %}Edit Meeting{% endblock %}
+
+{% block content %}
+<div class="card content-card">
+    <div class="card-body p-4 p-lg-5">
+        <h1 class="page-header mb-2">Edit Meeting</h1>
+        <p class="muted-text mb-4">Update the details for {{ meeting.title }}.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'meeting_detail' meeting.id %}" class="btn btn-outline-secondary">Back to Details</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

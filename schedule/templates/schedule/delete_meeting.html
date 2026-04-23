@@ -1,0 +1,27 @@
+{% extends 'schedule/base.html' %}
+{% block title %}Delete Meeting{% endblock %}
+
+{% block content %}
+<div class="content-card" style="max-width: 500px;">
+    <div style="font-size: 21px; font-weight: 700; color: #b91c1c; margin-bottom: 8px; letter-spacing: -0.02em;">
+        Delete Meeting
+    </div>
+    <p style="font-size: 13px; color: #6b7280; margin-bottom: 0.5rem;">
+        Are you sure you want to delete <strong style="color: #111827;">{{ meeting.title }}</strong>?
+    </p>
+    <p style="font-size: 13px; color: #9ca3af; margin-bottom: 1.75rem;">
+        This action cannot be undone.
+    </p>
+    <div style="display: flex; gap: 8px;">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-action danger" style="padding: 8px 18px; font-size: 13px;">
+                Yes, Delete
+            </button>
+        </form>
+        <a href="{% url 'meeting_detail' meeting.id %}" class="btn-action" style="padding: 8px 18px; font-size: 13px;">
+            Cancel
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'schedule/base.html' %}
+
+{% block title %}Monthly Meetings{% endblock %}
+
+{% block sidebar_extra %}
+<div class="card summary-card mt-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">Monthly Overview</h5>
+        <p class="mb-2"><strong>View:</strong> Calendar-style layout</p>
+        <p class="mb-0 muted-text">Useful for spotting busier dates across the month.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card content-card">
+    <div class="card-body p-4 p-lg-5">
+        <h1 class="page-header mb-2">{{ title }}</h1>
+        <p class="muted-text mb-4">Monthly calendar view of meetings for better long-term planning.</p>
+
+        <div class="row g-3">
+            {% for day in calendar_days %}
+                <div class="col-md-4">
+                    <div class="calendar-day">
+                        <h5>{{ day.date.day }}</h5>
+
+                        {% if day.meetings %}
+                            {% for meeting in day.meetings %}
+                                <div class="meeting-mini">
+                                    <a href="{% url 'meeting_detail' meeting.id %}" class="text-decoration-none fw-semibold">
+                                        {{ meeting.title }}
+                                    </a>
+                                    <div class="small text-muted">{{ meeting.time }} | {{ meeting.team }}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="small text-muted mb-0">No meetings</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'schedule/base.html' %}
+
+{% block title %}Meeting Details{% endblock %}
+
+{% block content %}
+<div class="card content-card">
+    <div class="card-body p-4 p-lg-5">
+        <h1 class="page-header mb-4">Meeting Details</h1>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Title</strong>
+                    <p class="mb-0 mt-1">{{ meeting.title }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Team</strong>
+                    <p class="mb-0 mt-1">{{ meeting.team }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Date</strong>
+                    <p class="mb-0 mt-1">{{ meeting.date }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Time</strong>
+                    <p class="mb-0 mt-1">{{ meeting.time }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Platform</strong>
+                    <p class="mb-0 mt-1">{{ meeting.platform }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Status</strong>
+                    <p class="mb-0 mt-1">
+                        {% if meeting.status == 'Scheduled' %}
+                            <span class="badge-status status-scheduled">Scheduled</span>
+                        {% elif meeting.status == 'Completed' %}
+                            <span class="badge-status status-completed">Completed</span>
+                        {% elif meeting.status == 'Cancelled' %}
+                            <span class="badge-status status-cancelled">Cancelled</span>
+                        {% else %}
+                            <span class="badge-status status-default">{{ meeting.status }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Location</strong>
+                    <p class="mb-0 mt-1">{{ meeting.location|default:"Not specified" }}</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="p-3 bg-light rounded-4">
+                    <strong>Description</strong>
+                    <p class="mb-0 mt-1">{{ meeting.description|default:"No description provided." }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4 flex-wrap">
+            <a href="{% url 'edit_meeting' meeting.id %}" class="btn btn-primary">Edit Meeting</a>
+            {% if meeting.status != 'Cancelled' %}
+            <form method="post" action="{% url 'cancel_meeting' meeting.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning"
+                    onclick="return confirm('Are you sure you want to cancel this meeting?')">
+                    Cancel Meeting
+                </button>
+            </form>
+            {% endif %}
+            <a href="{% url 'delete_meeting' meeting.id %}" class="btn btn-outline-danger">Delete Meeting</a>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Back to Schedule</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

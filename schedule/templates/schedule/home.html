@@ -1,0 +1,94 @@
+{% extends 'schedule/base.html' %}
+{% block title %}Schedule Dashboard{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">Schedule</div>
+    <div class="page-sub">Plan meetings, monitor team activity and manage your schedule.</div>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card stat-card-total">
+        <div class="stat-label">Total</div>
+        <div class="stat-value">{{ total_meetings }}</div>
+    </div>
+    <div class="stat-card stat-card-blue">
+        <div class="stat-label">Scheduled</div>
+        <div class="stat-value">{{ scheduled_count }}</div>
+    </div>
+    <div class="stat-card stat-card-green">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value">{{ completed_count }}</div>
+    </div>
+    <div class="stat-card stat-card-red">
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-value">{{ cancelled_count }}</div>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="tab-group">
+        <a href="{% url 'home' %}" class="active">Upcoming</a>
+        <a href="{% url 'weekly' %}">Weekly</a>
+        <a href="{% url 'monthly' %}">Monthly</a>
+    </div>
+    <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input class="search-input" type="text" placeholder="Search by title or team..." id="searchInput">
+    </div>
+    <a href="{% url 'create_meeting' %}" class="btn-new">+ New Meeting</a>
+</div>
+
+<div class="section-label">All meetings</div>
+
+{% if meetings %}
+<div id="meetingList">
+{% for meeting in meetings %}
+    <div class="meeting-card" data-title="{{ meeting.title|lower }}" data-team="{{ meeting.team|lower }}">
+        <div style="flex:1">
+            <div class="meeting-title">{{ meeting.title }}</div>
+            <div class="meeting-meta">
+                <span>{{ meeting.date }}</span>
+                <span class="meta-dot"></span>
+                <span>{{ meeting.time }}</span>
+                <span class="meta-dot"></span>
+                <span>{{ meeting.team }}</span>
+                <span class="meta-dot"></span>
+                <span>{{ meeting.platform }}</span>
+            </div>
+        </div>
+        <div class="meeting-actions">
+            {% if meeting.status|lower == 'scheduled' %}
+                <span class="badge-status badge-scheduled">Scheduled</span>
+            {% elif meeting.status|lower == 'completed' %}
+                <span class="badge-status badge-completed">Completed</span>
+            {% elif meeting.status|lower == 'cancelled' %}
+                <span class="badge-status badge-cancelled">Cancelled</span>
+            {% endif %}
+            <a href="{% url 'meeting_detail' meeting.id %}" class="btn-action primary">View</a>
+            <a href="{% url 'edit_meeting' meeting.id %}" class="btn-action">Edit</a>
+            <a href="{% url 'delete_meeting' meeting.id %}" class="btn-action danger">Delete</a>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div style="font-size:32px;margin-bottom:12px">📅</div>
+    <div style="font-size:15px;font-weight:600;color:#374151;margin-bottom:6px">No meetings yet</div>
+    <div style="font-size:13px;color:#9ca3af;margin-bottom:1.5rem">Create your first meeting to start building your schedule.</div>
+    <a href="{% url 'create_meeting' %}" class="btn-new">+ Create Meeting</a>
+</div>
+{% endif %}
+
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#meetingList .meeting-card').forEach(card => {
+        const match = card.dataset.title.includes(q) || card.dataset.team.includes(q);
+        card.style.display = match ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}
